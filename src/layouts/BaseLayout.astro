@@ -1,0 +1,49 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description: string;
+}
+const { title, description } = Astro.props;
+const origin = 'https://carloscampos.cloud';
+const indexable = import.meta.env.PUBLIC_INDEXABLE === 'true';
+const person = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: 'Carlos Campos Fuentes',
+  url: origin,
+  description,
+  sameAs: ['https://www.linkedin.com/in/carloscamposfuentes/', 'https://github.com/camtes'],
+  worksFor: { '@type': 'Organization', name: 'EDUCA EDTECH Group' },
+  knowsAbout: ['Software architecture', 'Technical leadership', 'Product development', 'Artificial intelligence'],
+};
+---
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="robots" content={indexable ? 'index, follow' : 'noindex, nofollow'} />
+    <link rel="canonical" href={`${origin}/`} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="theme-color" content="#ffffff" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="es_ES" />
+    <meta property="og:url" content={`${origin}/`} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={`${origin}/social-card.png`} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Carlos Campos. Ingeniería, liderazgo técnico y producto." />
+    <meta name="twitter:card" content="summary_large_image" />
+    <script type="application/ld+json" set:html={JSON.stringify(person)} />
+  </head>
+  <body>
+    <a class="skip-link" href="#contenido">Saltar al contenido</a>
+    <slot />
+  </body>
+</html>

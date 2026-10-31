@@ -1,0 +1,34 @@
+# Dependencies and generated output
+node_modules/
+dist/
+.astro/
+.cache/
+coverage/
+*.tsbuildinfo
+*.log
+
+# Local environment and credentials (examples must contain placeholders only)
+.env
+.env.*
+!.env.example
+!.env.*.example
+*.pem
+*.key
+id_rsa*
+id_ed25519*
+.aws/
+.ssh/
+
+# Local agent and editor state
+.atl/
+.codex/
+.agents/
+.agent/
+.claude/
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db

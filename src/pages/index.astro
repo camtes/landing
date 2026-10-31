@@ -1,0 +1,131 @@
+---
+import { Image } from 'astro:assets';
+import portrait from '../assets/carlos-campos-neutral.png';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+
+const principles = [
+  {
+    number: '01',
+    title: 'Primero, entender el problema.',
+    text: 'La arquitectura empieza antes que el código: en el contexto, las restricciones y lo que necesita el producto. La solución más compleja no siempre es la más útil.',
+  },
+  {
+    number: '02',
+    title: 'El equipo también es parte del sistema.',
+    text: 'Las decisiones técnicas necesitan conversaciones claras. Me importa compartir contexto, escuchar otras perspectivas y construir una dirección que el equipo pueda hacer suya.',
+  },
+  {
+    number: '03',
+    title: 'Construir, aprender y ajustar.',
+    text: 'Mantenerme cerca del desarrollo me ayuda a conectar las decisiones con sus consecuencias. Prefiero avanzar con criterio y revisar lo aprendido antes que dar una solución por definitiva.',
+  },
+];
+const interests = [
+  {
+    number: 'A',
+    title: 'Arquitectura que acompaña al producto',
+    text: 'Cómo elegir límites, gestionar deuda técnica y permitir que un sistema evolucione sin añadir complejidad innecesaria.',
+    note: 'Diseño de software · Evolución de sistemas',
+  },
+  {
+    number: 'B',
+    title: 'Liderazgo que crea contexto',
+    text: 'Cómo conectar el trabajo del equipo con las prioridades del producto, compartir decisiones y desarrollar autonomía.',
+    note: 'Equipos · Comunicación · Criterio técnico',
+  },
+  {
+    number: 'C',
+    title: 'IA aplicada, con criterio',
+    text: 'Dónde puede ayudar la IA en la ingeniería del software, cómo evaluar sus resultados y qué responsabilidad sigue siendo nuestra.',
+    note: 'Herramientas · Calidad · Aprendizaje',
+  },
+];
+---
+<BaseLayout
+  title="Carlos Campos — Ingeniería, liderazgo técnico y producto"
+  description="Soy Carlos Campos. Desarrollo software, participo en decisiones de arquitectura y coordino equipos, conectando ingeniería, producto y negocio."
+>
+  <header class="site-header shell">
+    <a class="wordmark" href="#inicio" aria-label="Carlos Campos, inicio">carlos campos<span aria-hidden="true">.</span></a>
+    <nav aria-label="Navegación principal">
+      <a href="#sobre-mi">Sobre mí</a>
+      <a href="#enfoque">Mi enfoque</a>
+      <a href="#explorando">Explorando</a>
+    </nav>
+    <a class="header-contact" href="#contacto">Conversemos <span aria-hidden="true">↗</span></a>
+  </header>
+
+  <main id="contenido">
+    <section class="hero shell" id="inicio" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <h1 id="hero-title">Entre el código,<br />el equipo y <em>el producto.</em></h1>
+        <div class="hero-bottom">
+          <p class="hero-description">Ingeniería de software y liderazgo técnico.<br class="desktop-break" /> Con los pies en el código y la mirada en el contexto.</p>
+          <div class="hero-links">
+            <a class="solid-link" href="#sobre-mi">Conoce mi recorrido <span aria-hidden="true">↓</span></a>
+            <a class="text-link" href="https://github.com/camtes" target="_blank" rel="noopener noreferrer">Mi GitHub <span aria-hidden="true">↗</span><span class="sr-only"> (abre en otra pestaña)</span></a>
+          </div>
+        </div>
+      </div>
+      <div class="hero-footnote"><span>Actualmente en <strong><a href="https://educaedtech.com/" target="_blank" rel="noopener noreferrer">EDUCA EDTECH Group<span class="sr-only"> (abre en otra pestaña)</span></a></strong></span><span>Arquitectura · Personas · Producto</span></div>
+    </section>
+
+    <section class="about section shell" id="sobre-mi" aria-labelledby="about-title">
+      <SectionHeading number="01" label="Un poco de contexto" />
+      <div class="about-content">
+        <h2 id="about-title">Me interesa cómo se construye.<br /><em>Y también con quién y para qué.</em></h2>
+        <div class="about-columns">
+          <div class="about-narrative">
+            <p>Mi trabajo conecta el desarrollo de software, la arquitectura y la coordinación de equipos. Me gusta entender el problema completo: el código, las personas que lo construyen y el producto al que da forma.</p>
+            <p>Actualmente trabajo en EDUCA EDTECH Group, donde asumo responsabilidades de liderazgo técnico. Combino la participación en decisiones de arquitectura con el desarrollo y el trabajo junto al equipo.</p>
+            <p>Mi experiencia incluye React, React Native, Drupal y entornos cloud. Más que una lista de herramientas, me interesa el criterio para elegirlas y utilizarlas bien.</p>
+          </div>
+          <aside class="context-note" aria-label="Contexto profesional">
+            <figure class="about-portrait">
+              <Image src={portrait} alt="Retrato de Carlos Campos" widths={[240, 480]} sizes="(max-width: 700px) 200px, 220px" width={480} height={520} fit="cover" position="center" loading="lazy" format="webp" />
+              <figcaption>Carlos Campos</figcaption>
+            </figure>
+            <p class="eyebrow">Mi trabajo hoy</p>
+            <h3><a href="https://educaedtech.com/" target="_blank" rel="noopener noreferrer">EDUCA<br />EDTECH Group<span class="sr-only"> (abre en otra pestaña)</span></a></h3>
+            <p>Tecnología educativa.<br />Desarrollo, arquitectura<br />y liderazgo técnico.</p>
+            <a class="text-link" href="https://www.linkedin.com/in/carloscamposfuentes/" target="_blank" rel="noopener noreferrer">Mi trayectoria en LinkedIn <span aria-hidden="true">↗</span><span class="sr-only"> (abre en otra pestaña)</span></a>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <section class="approach-band" id="enfoque" aria-labelledby="approach-title">
+      <div class="section shell approach">
+        <SectionHeading number="02" label="Mi forma de trabajar" />
+        <div class="approach-content">
+          <h2 id="approach-title">Menos respuestas automáticas.<br /><em>Mejores preguntas.</em></h2>
+          <p class="section-intro">Tres ideas que orientan mi manera de abordar la ingeniería y el trabajo en equipo.</p>
+          <ol class="principles">
+            {principles.map((principle) => (
+              <li><span class="principle-number" aria-hidden="true">{principle.number}</span><div><h3>{principle.title}</h3><p>{principle.text}</p></div></li>
+            ))}
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <section class="section shell exploring" id="explorando" aria-labelledby="exploring-title">
+      <SectionHeading number="03" label="Lo que estoy explorando" />
+      <div class="exploring-content">
+        <div class="section-heading-row"><h2 id="exploring-title">Las preguntas<br /><em>que me acompañan.</em></h2><p>Áreas en las que quiero seguir profundizando. Sin recetas universales ni tecnología por la tecnología.</p></div>
+        <div class="interests">
+          {interests.map((interest) => (
+            <article><span class="interest-number" aria-hidden="true">{interest.number} /</span><h3>{interest.title}</h3><p>{interest.text}</p><p class="interest-note">{interest.note}</p></article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="contact shell" id="contacto" aria-labelledby="contact-title">
+      <SectionHeading number="04" label="Sigamos la conversación" />
+      <div class="contact-content"><p class="eyebrow">Ingeniería también es compartir perspectivas</p><h2 id="contact-title">¿Lo conversamos?</h2><p>Sobre software, equipos, producto o algo que merezca<br class="desktop-break" /> una buena conversación. Me encontrarás en LinkedIn.</p><a class="solid-link" href="https://www.linkedin.com/in/carloscamposfuentes/" target="_blank" rel="noopener noreferrer">Conectar en LinkedIn <span aria-hidden="true">↗</span><span class="sr-only"> (abre en otra pestaña)</span></a></div>
+    </section>
+  </main>
+  <footer class="site-footer shell"><a class="wordmark" href="#inicio">carlos campos<span aria-hidden="true">.</span></a><p>Software, personas y una buena dosis de curiosidad.</p><div><a href="https://github.com/camtes" target="_blank" rel="noopener noreferrer">GitHub<span class="sr-only"> (abre en otra pestaña)</span> <span aria-hidden="true">↗</span></a><span>© {new Date().getFullYear()}</span></div></footer>
+</BaseLayout>
