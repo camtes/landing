@@ -43,14 +43,15 @@ Create these **Repository secrets** under GitHub **Settings → Secrets and vari
 | --- | --- |
 | `VPS_HOST` | VPS hostname or IP address. |
 | `VPS_USER` | SSH account that owns `/var/www/landing` and can write releases there. |
+| `VPS_PORT` | Required SSH port number between 1 and 65535; use `22` for the standard port. |
 | `VPS_SSH_KEY` | Private OpenSSH key for that account. Keep the matching public key in its `authorized_keys`. |
 | `VPS_KNOWN_HOSTS` | Verified SSH host-key line for the VPS. |
 
-For a non-standard SSH port, create the Actions **variable** `VPS_PORT` with its numeric port; otherwise the workflow uses `22`. This workflow does not disable host-key checking. Obtain the server key from a trusted provider/console or administrator, verify its fingerprint out of band, and store the matching `known_hosts` line. Do not trust an unverified `ssh-keyscan` result. Rotate/revoke the SSH key if exposed. No Coolify token, GitHub Packages credential, Docker credential, or application secret is needed.
+`VPS_PORT` must be a repository secret, not an Actions variable; there is no default port fallback. For a non-standard SSH port, the `known_hosts` entry must use `[hostname-or-IP]:port` to match the configured host and port. This workflow does not disable host-key checking. Obtain the server key from a trusted provider/console or administrator, verify its fingerprint out of band, and store the matching `known_hosts` line. Do not trust an unverified `ssh-keyscan` result. Rotate/revoke the SSH key if exposed. No Coolify token, GitHub Packages credential, Docker credential, or application secret is needed.
 
 ### 3. Deploy and verify
 
-After configuring Caddy and the four required secrets, push a commit to `main` or manually run **Build and deploy** from GitHub **Actions**, selecting `main`. The workflow validates the source, transfers only the built static site, then switches the active symlink. Confirm the Actions jobs succeeded, open the public domain, and verify `/robots.txt` includes `Allow: /`, the page loads its image/fonts, and `/sitemap.xml` uses the expected canonical domain.
+After configuring Caddy and the five required secrets, push a commit to `main` or manually run **Build and deploy** from GitHub **Actions**, selecting `main`. The workflow validates the source, transfers only the built static site, then switches the active symlink. Confirm the Actions jobs succeeded, open the public domain, and verify `/robots.txt` includes `Allow: /`, the page loads its image/fonts, and `/sitemap.xml` uses the expected canonical domain.
 
 If the domain differs from `carloscampos.cloud`, update the canonical URL configuration described in the README before deploying. Caddy controls TLS; the workflow only transfers files and does not change DNS or Caddy configuration.
 

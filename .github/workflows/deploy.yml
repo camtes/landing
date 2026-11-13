@@ -81,14 +81,18 @@ jobs:
         env:
           VPS_HOST: ${{ secrets.VPS_HOST }}
           VPS_USER: ${{ secrets.VPS_USER }}
-          VPS_PORT: ${{ vars.VPS_PORT || '22' }}
+          VPS_PORT: ${{ secrets.VPS_PORT }}
           RELEASE_SHA: ${{ github.sha }}
         run: |
           set -euo pipefail
           : "${VPS_HOST:?Add the VPS_HOST Actions secret}"
           : "${VPS_USER:?Add the VPS_USER Actions secret}"
+          : "${VPS_PORT:?Add the VPS_PORT Actions secret}"
           [[ "$RELEASE_SHA" =~ ^[0-9a-f]{40}$ ]]
-          [[ "$VPS_PORT" =~ ^[0-9]{1,5}$ ]] && (( VPS_PORT >= 1 && VPS_PORT <= 65535 ))
+          if ! [[ "$VPS_PORT" =~ ^[0-9]{1,5}$ ]] || ! (( 10#$VPS_PORT >= 1 && 10#$VPS_PORT <= 65535 )); then
+            echo "VPS_PORT must be a numeric port between 1 and 65535" >&2
+            exit 1
+          fi
 
           target="${VPS_USER}@${VPS_HOST}"
           release_dir="/var/www/landing/releases/${RELEASE_SHA}"
