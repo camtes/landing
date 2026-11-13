@@ -54,6 +54,24 @@ test('portrait is in About rather than the text-led hero', () => {
   assert.equal((html.match(/alt="Retrato de Carlos Campos"/g) ?? []).length, 1);
 });
 
+test('hero social links have separate visible labels and decorative arrows', () => {
+  const hero = html.match(/<section[^>]+id="inicio"[^>]*>(.*?)<\/section>/s)?.[1];
+  assert.ok(hero);
+  for (const [url, label] of [
+    ['https://github.com/camtes', 'Mi GitHub'],
+    ['https://www.linkedin.com/in/carloscamposfuentes/', 'Mi LinkedIn'],
+  ]) {
+    const link = [...hero.matchAll(/<a\b([^>]*)>(.*?)<\/a>/gs)]
+      .find(([, attributes]) => attributes.includes(`href="${url}"`));
+    assert.ok(link, `Missing hero link: ${label}`);
+    assert.match(link[1], /target="_blank"/);
+    assert.match(link[1], /rel="noopener noreferrer"/);
+    assert.ok(link[2].includes(`<span class="hero-link-label">${label}</span>`));
+    assert.match(link[2], /<span aria-hidden="true">↗<\/span>/);
+    assert.match(link[2], /class="sr-only"/);
+  }
+});
+
 function normalizeHex(value) {
   const hex = value.trim().toLowerCase();
   return hex.length === 4 ? `#${[...hex.slice(1)].map((digit) => digit + digit).join('')}` : hex;

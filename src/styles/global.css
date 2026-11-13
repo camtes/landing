@@ -60,11 +60,13 @@ p { line-height: 1.75; }
 .header-contact { display: inline-flex; gap: 24px; align-items: center; border-bottom: 1px solid var(--ink); padding-block: 12px; }
 .hero { padding-top: 74px; }
 .hero-copy { max-width: 1160px; }
-.hero-bottom { display: flex; align-items: end; justify-content: space-between; gap: 48px; margin-top: 38px; }
+.hero-bottom { display: flex; align-items: end; justify-content: space-between; flex-wrap: wrap; gap: 32px 48px; margin-top: 96px; }
 .eyebrow { font-size: 11px; letter-spacing: 0.13em; text-transform: uppercase; font-weight: 600; line-height: 1.7; }
 h1 { font-size: clamp(58px, 7.3vw, 106px); line-height: 1.08; }
-.hero-description { margin-top: 0; font-size: 16px; color: var(--muted); line-height: 1.7; max-width: 490px; }
+.hero-description { flex: 1 1 560px; margin-top: 0; font-size: 20px; color: var(--muted); line-height: 1.7; max-width: 600px; }
 .hero-links { display: flex; gap: 30px; align-items: center; flex-wrap: wrap; flex-shrink: 0; }
+.hero-links .text-link { text-decoration: none; }
+.hero-link-label { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 5px; }
 .solid-link { display: inline-flex; align-items: center; justify-content: space-between; gap: 36px; min-height: 50px; padding: 14px 22px; background: var(--ink); color: var(--paper); font-size: 13px; text-decoration: none; transition: background 160ms ease; }
 .solid-link:hover { background: var(--accent); color: var(--paper); }
 .solid-link:focus-visible { outline-offset: 5px; }
@@ -78,7 +80,7 @@ h1 { font-size: clamp(58px, 7.3vw, 106px); line-height: 1.08; }
 .section-label { display: flex; align-items: baseline; gap: 18px; font-size: 10px; line-height: 1.5; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; padding-top: 12px; }
 .section-label > span:first-child { color: var(--accent); font-variant-numeric: tabular-nums; }
 h2 { font-size: clamp(34px, 3.4vw, 50px); line-height: 1.18; }
-.about-columns { display: grid; grid-template-columns: 1.65fr 1fr; gap: 64px; margin-top: 42px; }
+.about-columns { display: grid; grid-template-columns: 1.65fr 1fr; align-items: start; gap: 64px; margin-top: 50px; }
 .about-narrative p { font-size: 15px; color: var(--muted); }
 .about-narrative p + p { margin-top: 20px; }
 .context-note { min-width: 0; padding-left: 30px; border-left: 1px solid var(--line); }
@@ -118,10 +120,10 @@ h2 { font-size: clamp(34px, 3.4vw, 50px); line-height: 1.18; }
 @media (max-width: 1100px) {
   .shell { width: calc(100% - 72px); }
   .hero { padding-top: 54px; }
-  .hero-bottom { gap: 28px; }
+  .hero-bottom { align-items: start; flex-direction: column; gap: 28px; }
   .hero-links { gap: 20px; flex-shrink: 1; }
   h1 { font-size: clamp(53px, 7.3vw, 80px); }
-  .hero-description { font-size: 14px; }
+  .hero-description { flex: initial; font-size: 18px; }
   .section, .contact { grid-template-columns: 145px 1fr; gap: 38px; }
   .about-columns { gap: 35px; }
   .section { padding-block: 80px; }
@@ -157,8 +159,8 @@ h2 { font-size: clamp(34px, 3.4vw, 50px); line-height: 1.18; }
   .site-header nav a { min-height: 44px; display: inline-flex; align-items: center; }
   .hero { padding-top: 44px; }
   h1 { font-size: clamp(46px, 10.4vw, 70px); line-height: 1.08; }
-  .hero-bottom { margin-top: 28px; gap: 22px; }
-  .hero-description { font-size: 14px; }
+  .hero-bottom { gap: 22px; }
+  .hero-description { font-size: 17px; }
   .desktop-break { display: none; }
   .hero-links { gap: 22px; }
   .solid-link { font-size: 12px; gap: 28px; padding-inline: 18px; }
@@ -166,7 +168,7 @@ h2 { font-size: clamp(34px, 3.4vw, 50px); line-height: 1.18; }
   .hero-footnote { margin-top: 30px; padding-block: 19px; font-size: 10px; flex-direction: column; gap: 8px; }
   .section { padding-block: 58px; }
   h2 { font-size: 35px; }
-  .about-columns { grid-template-columns: 1fr; margin-top: 28px; gap: 30px; }
+  .about-columns { grid-template-columns: 1fr; gap: 30px; }
   .about-narrative p { font-size: 14px; }
   .context-note { padding-left: 20px; }
   .about-portrait { width: min(100%, 200px); margin-bottom: 24px; }
