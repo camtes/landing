@@ -1,0 +1,99 @@
+name: Build and deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: production-deployment
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    name: Validate static site
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check Astro project
+        run: npm run check
+
+      - name: Build preview output for tests
+        run: npm run build
+
+      - name: Test built site
+        run: npm run test
+
+      - name: Build indexable production output
+        run: npm run build
+        env:
+          PUBLIC_INDEXABLE: "true"
+
+      - name: Save production site artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: static-site
+          path: dist/
+          if-no-files-found: error
+          retention-days: 1
+
+  deploy:
+    name: Deploy static site to Caddy VPS
+    needs: validate
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download validated production site
+        uses: actions/download-artifact@v4
+        with:
+          name: static-site
+          path: dist/
+
+      - name: Install SSH credentials and known host
+        env:
+          VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
+          VPS_KNOWN_HOSTS: ${{ secrets.VPS_KNOWN_HOSTS }}
+        run: |
+          set -euo pipefail
+          : "${VPS_SSH_KEY:?Add the VPS_SSH_KEY Actions secret}"
+          : "${VPS_KNOWN_HOSTS:?Add the VPS_KNOWN_HOSTS Actions secret}"
+          install -m 700 -d "$HOME/.ssh"
+          printf '%s\n' "$VPS_SSH_KEY" > "$HOME/.ssh/deploy_key"
+          chmod 600 "$HOME/.ssh/deploy_key"
+          printf '%s\n' "$VPS_KNOWN_HOSTS" > "$HOME/.ssh/known_hosts"
+          chmod 600 "$HOME/.ssh/known_hosts"
+
+      - name: Upload release and atomically activate it
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+          VPS_PORT: ${{ vars.VPS_PORT || '22' }}
+          RELEASE_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          : "${VPS_HOST:?Add the VPS_HOST Actions secret}"
+          : "${VPS_USER:?Add the VPS_USER Actions secret}"
+          [[ "$RELEASE_SHA" =~ ^[0-9a-f]{40}$ ]]
+          [[ "$VPS_PORT" =~ ^[0-9]{1,5}$ ]] && (( VPS_PORT >= 1 && VPS_PORT <= 65535 ))
+
+          target="${VPS_USER}@${VPS_HOST}"
+          release_dir="/var/www/landing/releases/${RELEASE_SHA}"
+          ssh_args=(-i "$HOME/.ssh/deploy_key" -p "$VPS_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes)
+
+          ssh "${ssh_args[@]}" "$target" "mkdir -p '$release_dir'"
+          tar -C dist -czf - . | ssh "${ssh_args[@]}" "$target" "tar -xzf - -C '$release_dir'"
+          ssh "${ssh_args[@]}" "$target" "test -s '$release_dir/index.html' && ln -s '$release_dir' '/var/www/landing/current.next.${RELEASE_SHA}' && mv -Tf '/var/www/landing/current.next.${RELEASE_SHA}' '/var/www/landing/current'"

@@ -50,7 +50,7 @@ npm run preview
 
 That release allows crawling and advertises the sitemap. The canonical domain is `https://carloscampos.cloud/`; changing it requires updating `astro.config.mjs`, `src/layouts/BaseLayout.astro`, both crawler endpoints, and the tests together.
 
-Follow the [VPS deployment guide](docs/deployment.md) to serve **only `dist/`** through Nginx with HTTPS, release directories, and rollback. The static server needs no Node.js, PM2, Docker, database, or repository credentials. `npm run preview` is for local inspection, not a public production server. No VPS or DNS changes are performed by these instructions.
+Follow the [deployment guide](docs/deployment.md) for the GitHub Actions → SSH → Caddy workflow or manual VPS upload. The production application serves static `dist/` output; it needs no Node.js process, database, Docker, or app-specific runtime secrets. Actions validates preview and indexable builds, then transfers the exact production artifact to a release directory on the VPS and atomically updates Caddy's document root. `npm run preview` is for local inspection, not a public production server. The workflow does not configure SSH, Caddy, or DNS for you.
 
 ## Public repository hygiene
 

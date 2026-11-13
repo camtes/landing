@@ -1,6 +1,79 @@
-# Deploy the static website to a VPS
+# Deploy the static website
 
-Build locally and upload only `dist/`; Nginx serves the files without a Node.js process. This guide assumes **Ubuntu/Debian with systemd**, SSH access as a non-root sudo user, and a domain you control. It has not been run against your VPS.
+For this static site, the GitHub Actions workflow validates and builds the public files, then uploads that exact production build to a dedicated VPS release directory over SSH. Caddy serves the active release. No app container, Node.js process, Docker, Coolify, or application runtime secrets are needed.
+
+## GitHub Actions → Caddy on the VPS
+
+`.github/workflows/deploy.yml` runs on pushes to `main` and on manual dispatch. It runs `npm ci`, `npm run check`, a preview build, the tests, then an indexable production build. The built `dist/` is passed as an artifact from the successful validation job to deployment; it is not rebuilt a second time. Only `main` deploys, and only after all checks pass. Pull requests do not deploy production.
+
+Each deployment is stored under `/var/www/landing/releases/<commit-sha>`. After verifying `index.html`, the workflow atomically switches `/var/www/landing/current` to that release. Previous releases are retained for rollback. Caddy serves the symlinked `current` directory; content deployments do not reload Caddy. Do not copy Hepta's Docker build, container replacement, or app secrets: this is a static site.
+
+### 1. Prepare Caddy and the VPS once
+
+The workflow deploys to `/var/www/landing`. Keep an existing SSH/Caddy/domain setup intact; adapt the example to your actual Caddyfile rather than replacing a site block blindly. Configure the domain to serve the active directory:
+
+```caddyfile
+carloscampos.cloud {
+    root * /var/www/landing/current
+    file_server
+}
+```
+
+The hostname's DNS must point to the VPS, and ports 80/443 must reach Caddy for automatic HTTPS. Validate and reload Caddy **only if its configuration changed**:
+
+```sh
+sudo caddy validate --config /etc/caddy/Caddyfile
+sudo systemctl reload caddy
+```
+
+Create the deployment path and make the SSH account the owner. Caddy needs read/traverse access to the directory and files; do not use world-writable permissions such as `777`.
+
+```sh
+sudo install -d -o YOUR_SSH_USER -g YOUR_SSH_USER -m 0755 \
+  /var/www/landing /var/www/landing/releases
+```
+
+The SSH account must own both directories: it writes release files beneath `releases` and creates/replaces the `current` symlink directly beneath `/var/www/landing`. Confirm both paths are writable by that account and Caddy can read the deployed files. If your Caddy service runs in a container or has custom filesystem restrictions, ensure it can see `/var/www/landing/current` before proceeding.
+
+### 2. Add SSH credentials to GitHub
+
+Create these **Repository secrets** under GitHub **Settings → Secrets and variables → Actions**:
+
+| Secret | Value |
+| --- | --- |
+| `VPS_HOST` | VPS hostname or IP address. |
+| `VPS_USER` | SSH account that owns `/var/www/landing` and can write releases there. |
+| `VPS_SSH_KEY` | Private OpenSSH key for that account. Keep the matching public key in its `authorized_keys`. |
+| `VPS_KNOWN_HOSTS` | Verified SSH host-key line for the VPS. |
+
+For a non-standard SSH port, create the Actions **variable** `VPS_PORT` with its numeric port; otherwise the workflow uses `22`. This workflow does not disable host-key checking. Obtain the server key from a trusted provider/console or administrator, verify its fingerprint out of band, and store the matching `known_hosts` line. Do not trust an unverified `ssh-keyscan` result. Rotate/revoke the SSH key if exposed. No Coolify token, GitHub Packages credential, Docker credential, or application secret is needed.
+
+### 3. Deploy and verify
+
+After configuring Caddy and the four required secrets, push a commit to `main` or manually run **Build and deploy** from GitHub **Actions**, selecting `main`. The workflow validates the source, transfers only the built static site, then switches the active symlink. Confirm the Actions jobs succeeded, open the public domain, and verify `/robots.txt` includes `Allow: /`, the page loads its image/fonts, and `/sitemap.xml` uses the expected canonical domain.
+
+If the domain differs from `carloscampos.cloud`, update the canonical URL configuration described in the README before deploying. Caddy controls TLS; the workflow only transfers files and does not change DNS or Caddy configuration.
+
+### Roll back
+
+To select a previously deployed commit, run this on the VPS as the deployment SSH user, substituting a verified 40-character commit SHA whose release directory exists:
+
+```sh
+PREVIOUS_SHA='PASTE_VERIFIED_COMMIT_SHA'
+test -s "/var/www/landing/releases/$PREVIOUS_SHA/index.html" &&
+ln -s "/var/www/landing/releases/$PREVIOUS_SHA" "/var/www/landing/current.rollback" &&
+mv -Tf "/var/www/landing/current.rollback" /var/www/landing/current
+```
+
+The workflow intentionally does not prune old releases. Remove only verified inactive releases after confirming the current and rollback targets. Changing website content requires no Caddy reload; a Caddyfile change requires validation and reload.
+
+## Manual Nginx deployment
+
+This is an alternative for a VPS where you intentionally want to serve the site directly with Nginx instead of the Caddy setup above. Do not configure a second web server to compete for the same domain or ports.
+
+This route assumes **Ubuntu/Debian with systemd**, SSH access as a non-root sudo user, and a domain you control. It has not been run against your VPS.
+
+Build locally and upload only `dist/`; Nginx serves the files without a Node.js process.
 
 ## 1. Build locally
 
