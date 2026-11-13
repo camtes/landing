@@ -72,7 +72,7 @@ h1 { font-size: clamp(58px, 7.3vw, 106px); line-height: 1.08; }
 .solid-link:focus-visible { outline-offset: 5px; }
 .text-link { display: inline-flex; align-items: center; gap: 17px; font-size: 13px; font-weight: 500; padding-block: 10px; }
 .about-portrait { width: min(100%, 220px); margin-bottom: 28px; }
-.about-portrait img { width: 100%; aspect-ratio: 12 / 13; object-fit: cover; object-position: 50% 38%; background: var(--tint); }
+.about-portrait img { width: 100%; height: auto; aspect-ratio: 1; border-radius: 50%; object-fit: cover; object-position: 50% 38%; background: var(--tint); }
 .about-portrait figcaption { padding-top: 10px; font-size: 11px; line-height: 1.6; color: var(--muted); }
 .hero-footnote { display: flex; justify-content: space-between; gap: 20px; margin-top: 64px; padding-block: 23px; border-block: 1px solid var(--line); color: var(--muted); font-size: 11px; letter-spacing: 0.02em; }
 .hero-footnote strong { font-weight: 500; color: var(--ink); }
