@@ -173,7 +173,7 @@ h2 { font-size: clamp(34px, 3.4vw, 50px); line-height: 1.18; }
   h2 { font-size: 35px; }
   .about-columns { grid-template-columns: 1fr; gap: 40px; }
   .about-narrative p { font-size: 14px; }
-  .context-note { padding-left: 0; border-left: 0; }
+  .context-note { padding-left: 0; border-left: 0; order: -1; }
   .about-narrative, .context-note { text-align: left; }
   .profile-summary { --profile-photo-size: clamp(96px, 28vw, 112px); grid-template-columns: var(--profile-photo-size) minmax(0, 1fr); align-items: start; gap: 32px; }
   .about-portrait { width: var(--profile-photo-size); margin: 0; }
